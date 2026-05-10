@@ -1,0 +1,101 @@
+PEEKWATCH — Installation Guide
+================================
+Inbound threat monitor — flags external IPs probing your machine,
+shows who they are, where they are from, and what they want.
+
+Compatible: Windows, Linux
+Requires: admin / root privileges to capture packets.
+
+Requirements
+------------
+  Python 3.8+
+  pipx
+  Npcap (Windows only)
+
+Step 1: Install Python (if not already installed)
+---------------------------------------------------
+  Windows:
+    Download from https://www.python.org/downloads/
+    Check "Add Python to PATH" during setup.
+
+  Linux (Debian/Ubuntu):
+    sudo apt update && sudo apt install python3 python3-pip
+
+Step 2: Install Npcap (Windows only)
+--------------------------------------
+  Download and install from: https://npcap.com/#download
+  Use the default options during install.
+  This is required for packet capture on Windows.
+
+  Linux: install libpcap instead:
+    sudo apt install libpcap-dev
+
+Step 3: Install pipx (once per machine)
+-----------------------------------------
+  Windows:
+    pip install pipx
+    pipx ensurepath
+
+  Linux:
+    sudo apt install pipx
+    pipx ensurepath
+
+  IMPORTANT: Restart your terminal after running ensurepath.
+
+Step 4: Clone the repository
+------------------------------
+  git clone <repo-url>
+  cd peekwatch
+
+  IMPORTANT: You must be inside the peekwatch folder, not the parent folder.
+
+Step 5: Install
+----------------
+  pipx install .
+
+  To update after changes:
+    pipx install . --force
+
+Step 6: Run
+------------
+  IMPORTANT: Must be run as Administrator (Windows) or with sudo (Linux).
+
+  Windows — open terminal as Administrator, then:
+    peekwatch                 Monitor default interface
+    peekwatch -i Wi-Fi        Monitor Wi-Fi interface specifically
+    peekwatch -h              Show help
+
+  Linux:
+    sudo peekwatch
+    sudo peekwatch -i eth0
+
+What it detects
+----------------
+  - TCP SYN packets from external IPs (new connection attempts)
+  - UDP packets from external IPs
+  - ICMP pings and host discovery sweeps
+  - Ignores responses to your own outbound connections (SYN+ACK)
+  - Ignores all private/local traffic
+
+On exit
+--------
+  A plain-text session report is saved automatically:
+    peekwatch_YYYY-MM-DD_HH-MM-SS_to_HH-MM-SS.txt
+
+  Contents:
+    - Session summary (duration, this PC, gateway)
+    - All threat actors with full geo/ISP/ASN details
+    - Port targeting breakdown
+    - Complete alert log
+
+Network notes
+--------------
+  - Best results with a direct internet connection (no NAT).
+  - Behind a home router (NAT): you will only see traffic your router
+    explicitly forwards to your machine via port forwarding rules.
+  - Geo and ISP info is fetched from ip-api.com (free, no API key needed).
+  - Hostnames resolve in the background via reverse DNS.
+
+Uninstall
+----------
+  pipx uninstall peekwatch
